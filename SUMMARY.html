@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>System Architecture Summary - 23CS30003</title>
+</head>
+
+<body style="font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: auto;">
+    <h2>1. Architecture Overview</h2>
+    <p>The system is built in C++ and uses Forward Error Correction (FEC) over UDP to survive a hostile network while
+        staying under the 2.0x bandwidth budget.</p>
+
+    <h2>2. Sender Logic</h2>
+    <p>The sender reads strictly 164-byte packets from the harness. Instead of a naive 1:1 forward, it implements a
+        <strong>2:1 XOR Parity</strong> scheme. It transmits two standard data packets (Type 0) and computes an XOR
+        combination of their payloads to send as a third parity packet (Type 1). This yields a highly optimized 1.55x
+        bandwidth overhead.</p>
+
+    <h2>3. Receiver Logic</h2>
+    <p>The receiver utilizes a non-blocking <code>poll()</code> loop to read incoming packets into a
+        <code>std::map</code> jitter buffer. If a data packet is dropped by the relay, the receiver uses the subsequent
+        XOR parity packet to mathematically reconstruct the missing payload on the fly. A rigorous playout loop ensures
+        packets are flushed to the harness player strictly before their <code>t0 + DELAY_MS + i*20ms</code> deadline
+        expires.</p>
+</body>
+
+</html>

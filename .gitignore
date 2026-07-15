@@ -1,0 +1,14 @@
+# Compiled binaries
+sender
+receiver
+
+# Python cache
+__pycache__/
+
+# Logs and test outputs
+playout_log.json
+relay_stats.json
+
+# Handout files
+*.zip
+*.pdf
